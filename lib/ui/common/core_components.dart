@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
-import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class CoreComponents {
   static Widget getFormTextField(

@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:iub_students/models/login.dart';
+import 'package:iub_students/services/functional/user_services.dart';
 import 'package:iub_students/ui/common/core_components.dart';
 
 class LoginScreen extends StatelessWidget {
   static const String route = "/login";
   LoginScreen({super.key});
 
+  UserServices userServices = UserServices();
   final _formKey = GlobalKey<FormState>();
   Login loginData = Login.empty();
 
@@ -58,7 +60,12 @@ class LoginScreen extends StatelessWidget {
                   CoreComponents.middleSpace(),
                   CoreComponents.middleSpace(),
                   MaterialButton(
-                    onPressed: () async {},
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        _formKey.currentState?.save();
+                        userServices.login(loginData);
+                      }
+                    },
                     height: 45,
                     color: const Color(0xff3347B0),
                     padding:

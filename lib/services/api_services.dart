@@ -11,7 +11,7 @@ class ApiService {
       return jsonDecode(response.body);
     } else {
       throw Exception(
-          'Failed to perform GET request. Status code: ${response.statusCode}');
+          'Failed to perform POST request. Status code: ${response.body}');
     }
   }
 
