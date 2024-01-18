@@ -98,7 +98,7 @@ class Routine {
       'Wednesday': ${convertCourseListToJsonString(wednesday)},
       'Thursday': ${convertCourseListToJsonString(thursday)},
       'Friday': ${convertCourseListToJsonString(friday)},
-      'Saturday': ${convertCourseListToJsonString(saturday)},
+      'Saturday': ${convertCourseListToJsonString(saturday)}
     } """
         .replaceAll("'", "\"");
   }
