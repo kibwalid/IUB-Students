@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iub_students/models/setup.dart';
+import 'package:iub_students/ui/profile/profile.dart';
 import 'package:iub_students/ui/routine/routine.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
@@ -62,7 +63,7 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
       RoutineScreen(
         routine: widget.setup.routine,
       ),
-      Placeholder()
+      ProfileScreen()
     ];
   }
 

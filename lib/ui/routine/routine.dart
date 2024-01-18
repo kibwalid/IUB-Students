@@ -104,7 +104,7 @@ class _RoutineScreenState extends State<RoutineScreen> {
         ),
       );
     }
-    widgets.add(SizedBox(height: 20));
+    widgets.add(SizedBox(height: 3.h));
     return widgets;
   }
 
@@ -153,11 +153,11 @@ class _RoutineScreenState extends State<RoutineScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text("Room",
-                          style:
-                              TextStyle(fontSize: 12, color: Colors.black54)),
+                          style: TextStyle(
+                              fontSize: 11.dp, color: Colors.black54)),
                       Text(course.room,
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w600))
+                              fontSize: 17.dp, fontWeight: FontWeight.w600))
                     ],
                   ),
                 ),
