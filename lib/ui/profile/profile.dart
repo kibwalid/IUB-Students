@@ -141,61 +141,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Personal Info",
-                        style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 16.dp,
-                            fontWeight: FontWeight.w300),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          print("object");
-                        },
-                        child: Container(
-                          height: 4.h,
-                          width: 40.w,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 1,
-                            ),
-                            borderRadius: BorderRadius.circular(0),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'Download Transcript',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 1.h),
-                  Text("Khalid Ibnul  Walid",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.dp,
-                          fontWeight: FontWeight.w500)),
-                  Text("ID: 2330026",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.dp,
-                          fontWeight: FontWeight.w500)),
-                  Text("Major: Computer Science",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14.dp,
-                          fontWeight: FontWeight.w500)),
-                  SizedBox(height: 1.h),
-                  const Divider(thickness: 1, color: Colors.white),
-                  SizedBox(height: 1.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
                         "Due Payments",
                         style: TextStyle(
                             color: Colors.white70,
@@ -316,7 +261,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   ),
-                  _buildPageIndicator(2)
+                  _buildPageIndicator(2),
+
+                  SizedBox(height: 1.h),
+                  const Divider(thickness: 1, color: Colors.white),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Personal Info",
+                        style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 16.dp,
+                            fontWeight: FontWeight.w300),
+                      ),
+                      SizedBox(
+                        width: 22.w,
+                        child: IconButton(
+                            onPressed: () {},
+                            icon: Row(
+                              children: [
+                                Text("Logout ",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12.dp,
+                                        fontWeight: FontWeight.w300)),
+                                Icon(
+                                  Iconsax.logout_1_copy,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            )),
+                      ),
+                    ],
+                  ),
+                  Text("Khalid Ibnul  Walid",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.dp,
+                          fontWeight: FontWeight.w500)),
+                  Text("ID: 2330026",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.dp,
+                          fontWeight: FontWeight.w500)),
+                  Text("Major: Computer Science",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.dp,
+                          fontWeight: FontWeight.w500)),
                 ],
               ),
             ),
