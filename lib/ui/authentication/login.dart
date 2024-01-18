@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:iub_students/models/login.dart';
+import 'package:iub_students/models/setup.dart';
+import 'package:iub_students/screen_wrapper.dart';
 import 'package:iub_students/services/functional/user_services.dart';
 import 'package:iub_students/ui/common/core_components.dart';
+import 'package:iub_students/utils.dart';
 
 class LoginScreen extends StatelessWidget {
   static const String route = "/login";
@@ -63,7 +66,15 @@ class LoginScreen extends StatelessWidget {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState?.save();
-                        userServices.login(loginData);
+                        Setup? setup = await userServices.login(loginData);
+                        if (null != setup) {
+                          navigatorKey.currentState!.pushAndRemoveUntil(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ScreenWrapper(setup: setup),
+                              ),
+                              ((route) => false));
+                        }
                       }
                     },
                     height: 45,

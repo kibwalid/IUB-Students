@@ -12,6 +12,10 @@ class Login {
     return {'email': email, 'password': password};
   }
 
+  String toJsonString() {
+    return "{'email': '$email', 'password': '$password'}".replaceAll("'", "\"");
+  }
+
   factory Login.empty() {
     return Login(email: "", password: "");
   }

@@ -41,6 +41,8 @@ dependencies:
   hive: ^2.2.3
   loading_animation_widget: ^1.2.0+4
   path_provider: ^2.1.2
+  intl: ^0.18.1
+  persistent_bottom_nav_bar: ^5.0.2
 
 dev_dependencies:
   flutter_test:

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
-import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:iub_students/screen_wrapper.dart';
+import 'package:iub_students/services/functional/user_services.dart';
 import 'package:iub_students/models/setup.dart';
 import 'package:iub_students/ui/authentication/login.dart';
-import 'package:iub_students/ui/routine/routine.dart';
 import 'package:iub_students/utils.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -15,7 +14,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return FlutterSizer(builder: (context, orientation, screenType) {
@@ -32,6 +30,7 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           initialRoute: "/",
+          navigatorKey: navigatorKey,
           routes: routes,
         ),
       );
@@ -48,15 +47,19 @@ class Root extends StatefulWidget {
 }
 
 class _RootState extends State<Root> {
+  UserServices userServices = UserServices();
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Setup>(
-        future: _initalizeIUBStudents(),
+        future: userServices.initalizeIUBStudents(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Setup setup = snapshot.data!;
             if (setup.isLoggedIn) {
-              return const Routine();
+              return ScreenWrapper(
+                setup: setup,
+              );
             }
             return LoginScreen();
           } else if (snapshot.hasError) {
@@ -75,13 +78,5 @@ class _RootState extends State<Root> {
             );
           }
         });
-  }
-
-  Future<Setup> _initalizeIUBStudents() async {
-    if (!Hive.isBoxOpen("user")) {
-      Hive.init((await getApplicationDocumentsDirectory()).path);
-    }
-    var box = await Hive.openBox('user');
-    return Setup(isLoggedIn: box.get("token") != null);
   }
 }
