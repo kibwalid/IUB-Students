@@ -54,6 +54,15 @@ class UserServices {
     if (null == loginData) {
       var box = await Hive.openBox('user');
       loginData = Login.fromJson(json.decode(box.get("login_data")));
+      Map<String, dynamic> response = await _apiServices.postRequest(
+          Config.loginApiURL,
+          loginData.toJson(),
+          UtilityServices.getPostHeader());
+      if ("Success" != response["message"]) {
+        UtilityServices.showDialog(navigatorKey.currentContext!,
+            "IRAS ID and Password does not match. Please try again!");
+      }
+      await box.put("token", response["data"][0]["access_token"]);
     }
     Routine routine = await fetchRoutineFromAPI(loginData);
     var routineBox = await Hive.openBox('routine');
@@ -72,13 +81,13 @@ class UserServices {
     Map<String, dynamic> academicMap = json.decode(academic);
     Map<String, List<Event>> events = {};
 
-    List<String> keys = academicMap["events"].keys;
+    List<String> keys = academicMap["events"].keys.toList();
     for (int i = 0; i < keys.length; i++) {
-      List<Map<String, dynamic>> rawEvent = academicMap["events"][keys[i]];
+      List<dynamic> rawEvent = academicMap["events"][keys[i]];
       events[keys[i]] = rawEvent.map((e) => Event.fromJson(e)).toList();
     }
 
-    List<Map<String, dynamic>> rawExam = academicMap["exams"];
+    List<dynamic> rawExam = academicMap["exams"];
 
     List<Exam> exams =
         rawExam.map((element) => Exam.fromJson(element)).toList();

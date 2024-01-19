@@ -5,6 +5,8 @@ import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:iub_students/models/bills.dart';
 import 'package:iub_students/models/user.dart';
 import 'package:iub_students/services/functional/user_services.dart';
+import 'package:iub_students/services/functional/utility_services.dart';
+import 'package:iub_students/utils.dart';
 
 class ProfileScreen extends StatefulWidget {
   final User user;
@@ -17,6 +19,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  UserServices userServices = UserServices();
   int currentPage = 0;
   @override
   Widget build(BuildContext context) {
@@ -71,8 +74,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         size: 60.dp,
                       ),
                       TextButton(
-                        onPressed: () {
-                          print("object");
+                        onPressed: () async {
+                          await userServices.refreshSetup(null);
+                          navigatorKey.currentState
+                              ?.pushNamedAndRemoveUntil("/", (route) => false);
                         },
                         child: Container(
                           height: 4.h,
@@ -155,9 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       if (widget.bills.isNotEmpty)
                         TextButton(
-                          onPressed: () {
-                            print("object");
-                          },
+                          onPressed: () {},
                           child: Container(
                             height: 4.h,
                             width: 35.w,
