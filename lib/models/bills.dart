@@ -4,7 +4,6 @@ class Bill {
   String regSem;
   String regYear;
   String dueDate;
-  String regCode;
 
   Bill({
     required this.balance,
@@ -12,17 +11,16 @@ class Bill {
     required this.regSem,
     required this.regYear,
     required this.dueDate,
-    required this.regCode,
   });
 
   factory Bill.fromJson(Map<String, dynamic> json) {
     return Bill(
-        balance: json['balance'].toDouble(),
-        billType: json['billType'],
-        regSem: json['regSem'],
-        regYear: json['regYear'],
-        dueDate: json['dueDate'],
-        regCode: json['regCode']);
+      balance: json['balance'].toDouble(),
+      billType: json['billType'],
+      regSem: json['regSem'],
+      regYear: json['regYear'],
+      dueDate: json['dueDate'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -31,8 +29,7 @@ class Bill {
       'billType': billType,
       'regSem': regSem,
       'regYear': regYear,
-      'dueDate': dueDate,
-      'regCode': regCode
+      'dueDate': dueDate
     };
   }
 
@@ -42,8 +39,7 @@ class Bill {
       'billType': '$billType',
       'regSem': '$regSem',
       'regYear': '$regYear',
-      'dueDate': '$dueDate',
-      'regCode': '$regCode'
+      'dueDate': '$dueDate'
     }"""
         .replaceAll("'", "\"");
   }

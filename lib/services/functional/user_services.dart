@@ -28,24 +28,23 @@ class UserServices {
   }
 
   Future<Setup?> login(Login loginData) async {
-    try {
-      Map<String, dynamic> response = await _apiServices.postRequest(
-          Config.loginApiURL,
-          loginData.toJson(),
-          UtilityServices.getPostHeader());
-      if ("Success" == response["message"]) {
-        var box = await Hive.openBox('user');
-        await box.put("token", response["data"][0]["access_token"]);
-        await box.put("login_data", loginData.toJsonString());
+    // try {} catch (e) {
+    //   UtilityServices.showDialog(navigatorKey.currentContext!, e.toString());
+    // }
 
-        return await refreshSetup(loginData);
-      }
-      UtilityServices.showDialog(navigatorKey.currentContext!,
-          "IRAS ID and Password does not match. Please try again!");
-    } catch (e) {
-      UtilityServices.showDialog(navigatorKey.currentContext!,
-          "Unable to fetch data from server. Please check your internet connection!");
+    Map<String, dynamic> response = await _apiServices.postRequest(
+        Config.loginApiURL,
+        loginData.toJson(),
+        UtilityServices.getPostHeader());
+    if ("Success" == response["message"]) {
+      var box = await Hive.openBox('user');
+      await box.put("token", response["data"][0]["access_token"]);
+      await box.put("login_data", loginData.toJsonString());
+
+      return await refreshSetup(loginData);
     }
+    UtilityServices.showDialog(navigatorKey.currentContext!,
+        "IRAS ID and Password does not match. Please try again!");
 
     return null;
   }

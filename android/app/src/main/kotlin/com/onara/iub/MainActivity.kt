@@ -1,4 +1,4 @@
-package com.example.iub_students
+package com.onara.iub
 
 import io.flutter.embedding.android.FlutterActivity
 
