@@ -8,7 +8,12 @@ import 'package:iub_students/services/functional/utility_services.dart';
 class AcademicScreen extends StatefulWidget {
   final List<Exam> exams;
   final Map<String, List<Event>> events;
-  const AcademicScreen({super.key, required this.exams, required this.events});
+  final double cgpaNeeded;
+  const AcademicScreen(
+      {super.key,
+      required this.exams,
+      required this.events,
+      required this.cgpaNeeded});
 
   @override
   State<AcademicScreen> createState() => _AcademicScreenState();
@@ -47,27 +52,27 @@ class _AcademicScreenState extends State<AcademicScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Feb 24",
+                                Text(getDateHeader(),
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 24.dp,
                                         fontWeight: FontWeight.bold)),
-                                Text("20 Days till Mid-Term",
+                                Text(getDateCountdown(),
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 12.dp,
                                         fontWeight: FontWeight.w400)),
                                 SizedBox(height: 1.h),
-                                const LinearProgressIndicator(
-                                  value: 0.7,
+                                LinearProgressIndicator(
+                                  value: getPercent(),
                                 ),
                                 SizedBox(height: 2.h),
-                                Text("GPA to Maintain CG",
+                                Text("GPA to Increase CG",
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 12.dp,
                                         fontWeight: FontWeight.w400)),
-                                Text("3.75",
+                                Text(widget.cgpaNeeded.toStringAsFixed(2),
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 24.dp,
@@ -84,7 +89,7 @@ class _AcademicScreenState extends State<AcademicScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Upcoming",
+                                Text("Milestones",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16.dp,
@@ -105,15 +110,15 @@ class _AcademicScreenState extends State<AcademicScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text("Mid-Term Exams",
+                                        Text(widget.exams.first.title,
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 14.dp,
                                                 fontWeight: FontWeight.w500)),
-                                        Text("24 - 25 February",
+                                        Text(widget.exams.first.date,
                                             style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 14.dp,
+                                                fontSize: 13.dp,
                                                 fontWeight: FontWeight.w300)),
                                       ],
                                     )
@@ -135,15 +140,15 @@ class _AcademicScreenState extends State<AcademicScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text("Final Exams",
+                                        Text(widget.exams.last.title,
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 14.dp,
                                                 fontWeight: FontWeight.w500)),
-                                        Text("20 - 25 April",
+                                        Text(widget.exams.last.date,
                                             style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 14.dp,
+                                                fontSize: 13.dp,
                                                 fontWeight: FontWeight.w300)),
                                       ],
                                     )
@@ -178,6 +183,23 @@ class _AcademicScreenState extends State<AcademicScreen> {
         ),
       ),
     );
+  }
+
+  String getDateHeader() {
+    DateTime date = Exam.findClosestExam(widget.exams).startDate;
+    return "${date.day} ${UtilityServices.getMonthInWords(date)}";
+  }
+
+  String getDateCountdown() {
+    Exam exam = Exam.findClosestExam(widget.exams);
+    DateTime date = exam.startDate;
+    return "${date.difference(DateTime.now()).inDays} Days till ${exam.title.split(" ").first}";
+  }
+
+  double getPercent() {
+    Exam exam = Exam.findClosestExam(widget.exams);
+    DateTime date = exam.startDate;
+    return date.difference(DateTime.now()).inDays / 60;
   }
 
   List<Widget> generateAcademicEventUI() {

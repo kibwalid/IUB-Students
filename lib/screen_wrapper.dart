@@ -68,9 +68,22 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
       AcademicScreen(
         events: widget.setup.events,
         exams: widget.setup.exams,
+        cgpaNeeded: calculateRequiredGPA(
+            widget.setup.user.cpga,
+            widget.setup.user.creditsCompleted,
+            widget.setup.getCreditTaken(),
+            widget.setup.user.cpga + 0.2),
       ),
       ProfileScreen(user: widget.setup.user, bills: widget.setup.bills)
     ];
+  }
+
+  double calculateRequiredGPA(double currentCGPA, double completedCredits,
+      int currentCredits, double desiredCGPA) {
+    double requiredGPA =
+        ((currentCGPA * completedCredits) + (desiredCGPA * currentCredits)) /
+            (completedCredits + currentCredits);
+    return requiredGPA;
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {

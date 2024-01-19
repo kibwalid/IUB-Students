@@ -50,4 +50,22 @@ class UtilityServices {
       return "${text.substring(0, range)}...";
     }
   }
+
+  static String getMonthInWords(DateTime dateTime) {
+    List<String> monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'June',
+      'July',
+      'Aug',
+      'Sept',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return monthNames[dateTime.month - 1];
+  }
 }

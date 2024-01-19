@@ -19,4 +19,24 @@ class Setup {
       required this.bills,
       required this.events,
       required this.exams});
+
+  int getCreditTaken() {
+    int creditTaken = 0;
+    Set<String> allCourses = {};
+    for (int dayOfWeek = 1; dayOfWeek <= 7; dayOfWeek++) {
+      List<String> courses =
+          routine.getCourseList(dayOfWeek).map((e) => e.code).toList();
+      allCourses.addAll(courses);
+    }
+    List<String> allCoursesList = allCourses.toList();
+
+    for (int i = 0; i < allCoursesList.length; i++) {
+      if ("L" == allCoursesList[i].substring(allCoursesList[i].length - 1)) {
+        creditTaken += 1;
+        continue;
+      }
+      creditTaken += 3;
+    }
+    return creditTaken;
+  }
 }

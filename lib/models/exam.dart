@@ -33,4 +33,20 @@ class Exam {
     }"""
         .replaceAll("'", "\"");
   }
+
+  static Exam findClosestExam(List<Exam> exams) {
+    DateTime now = DateTime.now();
+    Exam closestExam = exams[0];
+
+    for (var exam in exams) {
+      Duration difference = exam.startDate.difference(now);
+      Duration closestDifference = closestExam.startDate.difference(now);
+
+      if (difference.inSeconds.abs() < closestDifference.inSeconds.abs()) {
+        closestExam = exam;
+      }
+    }
+
+    return closestExam;
+  }
 }
