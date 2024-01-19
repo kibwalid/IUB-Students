@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:hive/hive.dart';
 import 'package:iub_students/config.dart';
+import 'package:iub_students/models/bills.dart';
 import 'package:iub_students/models/course.dart';
 import 'package:iub_students/models/login.dart';
 import 'package:iub_students/models/routine.dart';
 import 'package:iub_students/models/setup.dart';
+import 'package:iub_students/models/user.dart';
 import 'package:iub_students/services/api_services.dart';
 import 'package:iub_students/services/functional/utility_services.dart';
 import 'package:iub_students/utils.dart';
@@ -14,22 +16,87 @@ import 'package:path_provider/path_provider.dart';
 class UserServices {
   final ApiService _apiServices = ApiService();
 
+  static Future<void> handleLogout() async {
+    var userBox = await Hive.openBox('user');
+    var routineBox = await Hive.openBox('routine');
+    await userBox.deleteAll(["token", "login_data", "data"]);
+    await routineBox.deleteAll(["classes"]);
+
+    navigatorKey.currentState?.pushNamedAndRemoveUntil("/", (route) => false);
+  }
+
   Future<Setup?> login(Login loginData) async {
-    Map<String, dynamic> response = await _apiServices.postRequest(
-        Config.loginApiURL,
-        loginData.toJson(),
-        UtilityServices.getPostHeader());
+    try {
+      Map<String, dynamic> response = await _apiServices.postRequest(
+          Config.loginApiURL,
+          loginData.toJson(),
+          UtilityServices.getPostHeader());
+      if ("Success" == response["message"]) {
+        var box = await Hive.openBox('user');
+        await box.put("token", response["data"][0]["access_token"]);
+        await box.put("login_data", loginData.toJsonString());
 
-    if ("Success" == response["message"]) {
-      var box = await Hive.openBox('user');
-      await box.put("token", response["data"][0]["access_token"]);
-      await box.put("login_data", loginData.toJsonString());
-
-      return await initalizeIUBStudents();
+        return await refreshSetup(loginData);
+      }
+      UtilityServices.showDialog(navigatorKey.currentContext!,
+          "IRAS ID and Password does not match. Please try again!");
+    } catch (e) {
+      print(e);
+      UtilityServices.showDialog(navigatorKey.currentContext!,
+          "Unable to fetch data from server. Please check your internet connection!");
     }
-    UtilityServices.showDialog(navigatorKey.currentContext!,
-        "IRAS ID and Password does not match. Please try again!");
     return null;
+  }
+
+  Future<Setup> refreshSetup(Login? loginData) async {
+    if (null == loginData) {
+      var box = await Hive.openBox('user');
+      loginData = Login.fromJson(json.decode(box.get("login_data")));
+    }
+    Routine routine = await fetchRoutineFromAPI(loginData);
+    var routineBox = await Hive.openBox('routine');
+    await routineBox.put("classes", routine.toJsonString());
+
+    User user = await fetchUserFromAPI(loginData);
+    var userBox = await Hive.openBox('user');
+    await userBox.put("data", user.toJsonString());
+
+    List<Bill> bills = await fetchBillFromAPI(loginData);
+    await userBox.put(
+        "bill", bills.map((e) => e.toJsonString()).toList().toString());
+
+    return Setup(isLoggedIn: true, routine: routine, user: user, bills: bills);
+  }
+
+  Future<User> fetchUserFromAPI(Login loginData) async {
+    Map<String, dynamic> response = await _apiServices.getRequest(
+        Config.studentInfoApiURL(loginData.email),
+        await UtilityServices.getHeaderWithToken());
+    User user = _parseRawUser(response["data"]);
+    return user;
+  }
+
+  Future<Routine> fetchRoutineFromAPI(Login loginData) async {
+    Map<String, dynamic> response = await _apiServices.getRequest(
+        Config.registeredCoursesApiURL(loginData.email),
+        await UtilityServices.getHeaderWithToken());
+    Routine routine = _parseRawRoutine(response["data"]);
+    return routine;
+  }
+
+  Future<List<Bill>> fetchBillFromAPI(Login loginData) async {
+    Map<String, dynamic> response = await _apiServices.getRequest(
+        Config.billsApiURL(loginData.email),
+        await UtilityServices.getHeaderWithToken());
+    List<Bill> bills = _parseRawBills(response["data"]);
+    return bills;
+  }
+
+  List<Bill> _parseRawBills(List<dynamic> rawBills) {
+    return rawBills
+        .where((element) => "U" == element['dueStatus'])
+        .map((json) => Bill.fromJson(json))
+        .toList();
   }
 
   Future<Setup> initalizeIUBStudents() async {
@@ -39,49 +106,55 @@ class UserServices {
     var box = await Hive.openBox('user');
     bool isLoggedIn = box.get("token") != null;
 
+    User user = User.empty();
     Routine routine = Routine.empty();
+    List<Bill> bills = [];
     if (isLoggedIn) {
-      routine = await fetchRoutine();
+      routine = await fetchRoutineFromLocal();
+      user = await fetchUserFromLocal();
+      bills = await fetchBillFromLocal();
     }
-    return Setup(isLoggedIn: isLoggedIn, routine: routine);
+    return Setup(
+        isLoggedIn: isLoggedIn, routine: routine, user: user, bills: bills);
   }
 
-  Future<Routine> fetchRoutine() async {
-    // Fetching routine from local
+  Future<Routine> fetchRoutineFromLocal() async {
     var routineBox = await Hive.openBox('routine');
     var rawRoutine = routineBox.get("classes");
-
     if (null != rawRoutine) {
-      print(rawRoutine);
       return Routine.fromJson(json.decode(rawRoutine));
     }
-
-    // Fetching routine from IRAS Server
-    return await fetchRoutineFromIras(refresh: false);
+    return Routine.empty();
   }
 
-  Future<Routine> fetchRoutineFromIras({required bool refresh}) async {
-    var box = await Hive.openBox('user');
-    Login loginData = Login.fromJson(json.decode(box.get("login_data")));
-
-    if (refresh) {
-      Setup? setup = await login(loginData);
-      if (null != setup) {
-        var routineBox = await Hive.openBox('routine');
-        await routineBox.put("classes", setup.routine.toJsonString());
-        return setup.routine;
-      }
-      return Routine.empty();
+  Future<User> fetchUserFromLocal() async {
+    var userBox = await Hive.openBox('user');
+    var rawUser = userBox.get("data");
+    if (null != rawUser) {
+      return User.fromJson(json.decode(rawUser));
     }
+    return User.empty();
+  }
 
-    Map<String, dynamic> response = await _apiServices.getRequest(
-        Config.registeredCoursesApiURL(loginData.email),
-        await UtilityServices.getHeaderWithToken());
-    Routine routine = _parseRawRoutine(response["data"]);
+  Future<List<Bill>> fetchBillFromLocal() async {
+    List<Bill> bills = [];
+    var userBox = await Hive.openBox('user');
+    var rawBill = userBox.get("bill");
+    if (null != rawBill) {
+      List<dynamic> rawBillList = json.decode(rawBill);
+      bills = rawBillList.map((e) => Bill.fromJson(e)).toList();
+      return bills;
+    }
+    return bills;
+  }
 
-    var routineBox = await Hive.openBox('routine');
-    await routineBox.put("classes", routine.toJsonString());
-    return routine;
+  User _parseRawUser(Map<String, dynamic> data) {
+    return User(
+        name: data['studentName'],
+        cpga: data['cgpa'],
+        creditsCompleted: data['earnedCredit'],
+        id: data['studentId'],
+        major: data['firstMajor']);
   }
 
   Routine _parseRawRoutine(List<dynamic> data) {
@@ -89,7 +162,7 @@ class UserServices {
 
     for (int i = 0; i < data.length; i++) {
       var json = data[i];
-      List<String> parsedDate = parseTimeString(json["classTime"]);
+      List<String> parsedDate = _parseTimeString(json["classTime"]);
       if ("Z" == json["grade"]) {
         Course course = Course(
             code: json["courseId"],
@@ -104,12 +177,10 @@ class UserServices {
       }
     }
 
-    print(routine.sunday);
-
     return routine;
   }
 
-  List<String> parseTimeString(String timeString) {
+  List<String> _parseTimeString(String timeString) {
     List<String> splitByDash = timeString.split('-');
 
     if (2 != splitByDash.length) {

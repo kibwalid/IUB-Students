@@ -1,7 +1,7 @@
 class User {
   String name;
   double cpga;
-  int creditsCompleted;
+  double creditsCompleted;
   String id;
   String major;
 
@@ -21,6 +21,10 @@ class User {
       id: json['id'],
       major: json['major'],
     );
+  }
+
+  factory User.empty() {
+    return User(name: "", cpga: 0, creditsCompleted: 0, id: "", major: "");
   }
 
   Map<String, dynamic> toJson() {

@@ -63,7 +63,7 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
       RoutineScreen(
         routine: widget.setup.routine,
       ),
-      ProfileScreen()
+      ProfileScreen(user: widget.setup.user, bills: widget.setup.bills)
     ];
   }
 
