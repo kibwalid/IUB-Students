@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sizer/flutter_sizer.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:iub_students/models/event.dart';
+import 'package:iub_students/models/exam.dart';
 import 'package:iub_students/services/functional/utility_services.dart';
 
 class AcademicScreen extends StatefulWidget {
-  const AcademicScreen({super.key});
+  final List<Exam> exams;
+  final Map<String, List<Event>> events;
+  const AcademicScreen({super.key, required this.exams, required this.events});
 
   @override
   State<AcademicScreen> createState() => _AcademicScreenState();
@@ -15,7 +19,6 @@ class _AcademicScreenState extends State<AcademicScreen> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: SizedBox(
-        height: 95.h,
         child: Padding(
           padding: EdgeInsets.only(top: 6.h, left: 5.w, right: 5.w),
           child: Column(
@@ -167,170 +170,103 @@ class _AcademicScreenState extends State<AcademicScreen> {
                   borderRadius: BorderRadius.circular(5),
                 ),
               ),
+              Column(
+                children: generateAcademicEventUI(),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> generateAcademicEventUI() {
+    List<Widget> ui = widget.events.entries
+        .map(
+          (e) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               SizedBox(height: 2.h),
               Text(
-                "January",
+                e.key,
                 style: TextStyle(fontSize: 16.dp, fontWeight: FontWeight.w500),
               ),
               SizedBox(height: 1.h),
-              Container(
-                clipBehavior: Clip.hardEdge,
-                width: double.infinity,
-                height: 10.h,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color:
-                          Colors.grey.withOpacity(0.1), // Set shadow color here
-                      spreadRadius: 5, // Set spread radius of the shadow
-                      blurRadius: 7, // Set blur radius of the shadow
-                      offset: Offset(0, 3), // Set offset of the shadow
-                    ),
-                  ],
-                  border: Border.all(
-                    color: Colors.black12,
-                  ),
-                  borderRadius: BorderRadius.circular(0),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 15.w,
-                      child: Center(
-                          child: Icon(
-                        Iconsax.book_saved_copy,
-                        color: Colors.purpleAccent,
-                      )),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(12.dp),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            UtilityServices.subText(
-                                "Course registration for Spring 2024", 30),
-                            style: TextStyle(
-                                fontSize: 16.dp, fontWeight: FontWeight.w500),
-                          ),
-                          Text(
-                            "14 Jan - 16 Jan, 2024",
-                            style: TextStyle(
-                                fontSize: 14.dp, fontWeight: FontWeight.w400),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+              Column(
+                children: e.value.map((e) => buildEventCard(e)).toList(),
               ),
-              SizedBox(height: 1.h),
-              Container(
-                clipBehavior: Clip.hardEdge,
-                width: double.infinity,
-                height: 10.h,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color:
-                          Colors.grey.withOpacity(0.1), // Set shadow color here
-                      spreadRadius: 5, // Set spread radius of the shadow
-                      blurRadius: 7, // Set blur radius of the shadow
-                      offset: Offset(0, 3), // Set offset of the shadow
-                    ),
-                  ],
-                  border: Border.all(
-                    color: Colors.black12,
-                  ),
-                  borderRadius: BorderRadius.circular(0),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 15.w,
-                      child: Center(
-                          child: Icon(
-                        Iconsax.tree_copy,
-                        color: Colors.purpleAccent,
-                      )),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(12.dp),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            UtilityServices.subText("Independence Day", 30),
-                            style: TextStyle(
-                                fontSize: 16.dp, fontWeight: FontWeight.w500),
-                          ),
-                          Text(
-                            "14 Jan - 16 Jan, 2024",
-                            style: TextStyle(
-                                fontSize: 14.dp, fontWeight: FontWeight.w400),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 1.h),
-              Container(
-                clipBehavior: Clip.hardEdge,
-                width: double.infinity,
-                height: 10.h,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color:
-                          Colors.grey.withOpacity(0.1), // Set shadow color here
-                      spreadRadius: 5, // Set spread radius of the shadow
-                      blurRadius: 7, // Set blur radius of the shadow
-                      offset: Offset(0, 3), // Set offset of the shadow
-                    ),
-                  ],
-                  border: Border.all(
-                    color: Colors.black12,
-                  ),
-                  borderRadius: BorderRadius.circular(0),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 15.w,
-                      child: Center(
-                          child: Icon(
-                        Iconsax.book_saved_copy,
-                        color: Colors.redAccent,
-                      )),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(12.dp),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            UtilityServices.subText("Mid-Term Exam", 30),
-                            style: TextStyle(
-                                fontSize: 16.dp, fontWeight: FontWeight.w500),
-                          ),
-                          Text(
-                            "14 Jan - 16 Jan, 2024",
-                            style: TextStyle(
-                                fontSize: 14.dp, fontWeight: FontWeight.w400),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              SizedBox(height: 1.h)
             ],
           ),
+        )
+        .toList();
+    ui.add(Column(
+      children: [
+        SizedBox(
+          height: 3.h,
+        ),
+      ],
+    ));
+    return ui;
+  }
+
+  Widget buildEventCard(Event event) {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: 1.h,
+      ),
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        width: double.infinity,
+        height: 10.h,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1), // shadow color here
+              spreadRadius: 5, // spread radius of the shadow
+              blurRadius: 7, // blur radius of the shadow
+              offset: const Offset(0, 3), // offset of the shadow
+            ),
+          ],
+          border: Border.all(
+            color: Colors.black12,
+          ),
+          borderRadius: BorderRadius.circular(0),
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 15.w,
+              child: Center(
+                  child: Icon(
+                1 == event.tag.length
+                    ? Icons.villa_outlined
+                    : Iconsax.book_saved_copy,
+                color: 3 == event.tag.length
+                    ? Colors.redAccent
+                    : Colors.purpleAccent,
+              )),
+            ),
+            Padding(
+              padding: EdgeInsets.all(12.dp),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    UtilityServices.subText(event.title, 30),
+                    style:
+                        TextStyle(fontSize: 16.dp, fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    event.date,
+                    style:
+                        TextStyle(fontSize: 14.dp, fontWeight: FontWeight.w400),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

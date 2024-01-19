@@ -4,6 +4,8 @@ import 'package:hive/hive.dart';
 import 'package:iub_students/config.dart';
 import 'package:iub_students/models/bills.dart';
 import 'package:iub_students/models/course.dart';
+import 'package:iub_students/models/event.dart';
+import 'package:iub_students/models/exam.dart';
 import 'package:iub_students/models/login.dart';
 import 'package:iub_students/models/routine.dart';
 import 'package:iub_students/models/setup.dart';
@@ -26,25 +28,26 @@ class UserServices {
   }
 
   Future<Setup?> login(Login loginData) async {
-    try {
-      Map<String, dynamic> response = await _apiServices.postRequest(
-          Config.loginApiURL,
-          loginData.toJson(),
-          UtilityServices.getPostHeader());
-      if ("Success" == response["message"]) {
-        var box = await Hive.openBox('user');
-        await box.put("token", response["data"][0]["access_token"]);
-        await box.put("login_data", loginData.toJsonString());
+    // try {
 
-        return await refreshSetup(loginData);
-      }
-      UtilityServices.showDialog(navigatorKey.currentContext!,
-          "IRAS ID and Password does not match. Please try again!");
-    } catch (e) {
-      print(e);
-      UtilityServices.showDialog(navigatorKey.currentContext!,
-          "Unable to fetch data from server. Please check your internet connection!");
+    // } catch (e) {
+    //   print(e);
+    //   UtilityServices.showDialog(navigatorKey.currentContext!,
+    //       "Unable to fetch data from server. Please check your internet connection!");
+    // }
+    Map<String, dynamic> response = await _apiServices.postRequest(
+        Config.loginApiURL,
+        loginData.toJson(),
+        UtilityServices.getPostHeader());
+    if ("Success" == response["message"]) {
+      var box = await Hive.openBox('user');
+      await box.put("token", response["data"][0]["access_token"]);
+      await box.put("login_data", loginData.toJsonString());
+
+      return await refreshSetup(loginData);
     }
+    UtilityServices.showDialog(navigatorKey.currentContext!,
+        "IRAS ID and Password does not match. Please try again!");
     return null;
   }
 
@@ -65,7 +68,34 @@ class UserServices {
     await userBox.put(
         "bill", bills.map((e) => e.toJsonString()).toList().toString());
 
-    return Setup(isLoggedIn: true, routine: routine, user: user, bills: bills);
+    String academic = await fetchAcademicsFromURL();
+    await routineBox.put("academic", academic);
+    Map<String, dynamic> academicMap = json.decode(academic);
+    Map<String, List<Event>> events = {};
+
+    List<String> keys = academicMap["events"].keys;
+    for (int i = 0; i < keys.length; i++) {
+      List<Map<String, dynamic>> rawEvent = academicMap["events"][keys[i]];
+      events[keys[i]] = rawEvent.map((e) => Event.fromJson(e)).toList();
+    }
+
+    List<Map<String, dynamic>> rawExam = academicMap["exams"];
+
+    List<Exam> exams =
+        rawExam.map((element) => Exam.fromJson(element)).toList();
+
+    return Setup(
+        isLoggedIn: true,
+        routine: routine,
+        user: user,
+        bills: bills,
+        events: events,
+        exams: exams);
+  }
+
+  Future<String> fetchAcademicsFromURL() async {
+    return await _apiServices.getRequestWithoutDecode(
+        Config.academicCalendarGithubURL, null);
   }
 
   Future<User> fetchUserFromAPI(Login loginData) async {
@@ -109,13 +139,45 @@ class UserServices {
     User user = User.empty();
     Routine routine = Routine.empty();
     List<Bill> bills = [];
+    List<Exam> exams = [];
+    Map<String, List<Event>> events = {};
     if (isLoggedIn) {
       routine = await fetchRoutineFromLocal();
       user = await fetchUserFromLocal();
       bills = await fetchBillFromLocal();
+      List<dynamic> academic = await populateAcademicFromLocal();
+      events = academic[0];
+      exams = academic[1];
     }
+
     return Setup(
-        isLoggedIn: isLoggedIn, routine: routine, user: user, bills: bills);
+        isLoggedIn: isLoggedIn,
+        routine: routine,
+        user: user,
+        bills: bills,
+        events: events,
+        exams: exams);
+  }
+
+  Future<List<dynamic>> populateAcademicFromLocal() async {
+    var routineBox = await Hive.openBox('routine');
+    var rawAcademic = routineBox.get("academic");
+    if (null != rawAcademic) {
+      Map<String, dynamic> academicMap = json.decode(rawAcademic);
+      Map<String, List<Event>> events = {};
+      List<String> keys = academicMap["events"].keys.toList();
+      for (int i = 0; i < keys.length; i++) {
+        List<dynamic> rawEvent = academicMap["events"][keys[i]];
+        events[keys[i]] = rawEvent.map((e) => Event.fromJson(e)).toList();
+      }
+
+      List<dynamic> rawExam = academicMap["exams"];
+
+      List<Exam> exams =
+          rawExam.map((element) => Exam.fromJson(element)).toList();
+      return [events, exams];
+    }
+    return [{}, []];
   }
 
   Future<Routine> fetchRoutineFromLocal() async {

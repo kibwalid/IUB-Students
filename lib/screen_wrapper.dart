@@ -65,7 +65,10 @@ class _ScreenWrapperState extends State<ScreenWrapper> {
       RoutineScreen(
         routine: widget.setup.routine,
       ),
-      const AcademicScreen(),
+      AcademicScreen(
+        events: widget.setup.events,
+        exams: widget.setup.exams,
+      ),
       ProfileScreen(user: widget.setup.user, bills: widget.setup.bills)
     ];
   }
