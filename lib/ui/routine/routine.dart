@@ -24,9 +24,7 @@ class _RoutineScreenState extends State<RoutineScreen> {
             "Your Classes",
             style: TextStyle(fontSize: 28.dp, fontWeight: FontWeight.normal),
           ),
-          SizedBox(
-            height: 1.h,
-          ),
+          SizedBox(height: 1.h),
           Container(
             width: 10.w,
             height: 0.6.h,

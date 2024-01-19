@@ -42,4 +42,12 @@ class UtilityServices {
       'Content-Type': 'application/json',
     };
   }
+
+  static String subText(String text, int range) {
+    if (text.length < range + 1) {
+      return text;
+    } else {
+      return "${text.substring(0, range)}...";
+    }
+  }
 }
