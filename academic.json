@@ -1,87 +1,75 @@
 {
   "events": {
-    "January": [
+    "May": [
       {
-        "title": "Course registration for Spring 2024",
-        "date": "January 14-16, 2024",
+        "title": "Course registration for Summer 2024",
+        "date": "May 12-15, 2024",
         "tag": "**"
       },
       {
         "title": "Classes commence",
-        "date": "January 20, 2024",
-        "tag": "**"
-      }
-    ],
-    "February": [
-      {
-        "title": "Shaheed Day",
-        "date": "February 21, 2024",
-        "tag": "*"
-      },
-      {
-        "title": "Mid-term exams",
-        "date": "February 24-29, 2024",
-        "tag": "***"
-      },
-      {
-        "title": "Shab-E-Barat",
-        "date": "February 26, 2024",
-        "tag": "*"
-      }
-    ],
-    "March": [
-      {
-        "title": "Last date of withdrawal from courses",
-        "date": "March 14, 2024",
-        "tag": "**"
-      },
-      {
-        "title": "Birthday of Father of the Nation Bangabandhu Sheikh Mujibur Rahman",
-        "date": "March 17, 2024",
-        "tag": "*"
-      },
-      {
-        "title": "Independence & National Day",
-        "date": "March 26, 2024",
-        "tag": "*"
-      }
-    ],
-    "April": [
-      {
-        "title": "Laylatul Qadr and Eid-ul-Fitr",
-        "date": "April 6-13, 2024",
-        "tag": "*"
-      },
-      {
-        "title": "Bangla New Year",
-        "date": "April 14, 2024",
-        "tag": "*"
-      },
-      {
-        "title": "Faculty Evaluation",
-        "date": "May 15-18, 2024",
-        "tag": "**"
-      },
-      {
-        "title": "Classes end",
         "date": "May 18, 2024",
         "tag": "**"
       },
       {
-        "title": "Final exams",
-        "date": "April 20-25, 2024",
-        "tag": "***"
+        "title": "Budhha Purnima",
+        "date": "May 22, 2024",
+        "tag": "*"
       }
     ],
-    "May": [
+    "June": [
       {
-        "title": "May Day",
-        "date": "May 1, 2024",
+        "title": "Eid-Ul-Azha",
+        "date": "June 15-20, 2024",
         "tag": "*"
-      },      
+      }
+    ],
+    "July": [
       {
-        "title": "Grades due at Office of the Controller of Examinations & Official end of Spring 2024",
-        "date": "May 2, 2024",
+        "title": "Eid-Ul-Azha",
+        "date": "June 29 - July 4, 2024",
+        "tag": "***"
+      },
+      {
+        "title": "Ashura",
+        "date": "July 17, 2024",
+        "tag": "*"
+      },
+      {
+        "title": "Last date of withdrawal from courses",
+        "date": "July 18, 2024",
+        "tag": "**"
+      }
+    ],
+    "August": [
+      {
+        "title": "Faculty Evaluation",
+        "date": "August 11-13, 2024",
+        "tag": "**"
+      },
+      {
+        "title": "Classes End",
+        "date": "August 11-13, 2024",
+        "tag": "**"
+      },
+      {
+        "title": "National Mourning Day",
+        "date": "August 15, 2024",
+        "tag": "*"
+      },
+      {
+        "title": "Final exams",
+        "date": "August 17-22, 2024",
+        "tag": "***"
+      },
+      {
+        "title": "Janmastami",
+        "date": "August 26, 2024",
+        "tag": "*"
+      },
+      {
+        "title": "Grades due at Office of the Controller of Examinations & Official end of Summer 2024",
+        "date": "August 29, 2024",
         "tag": "**"
       }
     ]
@@ -89,13 +77,13 @@
   "exams": [
     {
       "title": "Mid-term exams",
-      "date": "February 24-29, 2024",
-      "startDate": "2024-02-24T00:00:00Z"
+      "date": "June 29-Jul 4, 2024",
+      "startDate": "2024-06-29T00:00:00Z"
     },
     {
       "title": "Final exams",
-      "date": "April 20-25, 2024",
-      "startDate": "2024-04-20T00:00:00Z"
+      "date": "August 17-22, 2024",
+      "startDate": "2024-08-17T00:00:00Z"
     }
   ]
 }
